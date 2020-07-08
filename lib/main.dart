@@ -1,7 +1,12 @@
+import 'package:FirstFlutter/app.dart';
+import 'package:FirstFlutter/page2.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 void main() => runApp(MyApp());
+
+final logger = Logger();
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -10,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Welcome to Flutter',
         theme: ThemeData(
-          primaryColor: Colors.pink[300],
+          primaryColor: Colors.pink[0],
         ),
         home: RandomWords());
   }
@@ -33,6 +38,8 @@ class _RandomWordsState extends State<RandomWords> {
     return Scaffold(
       appBar: AppBar(title: Text('Startup Name Generator'), actions: [
         IconButton(icon: Icon(Icons.list), onPressed: _pushSaved),
+        IconButton(icon: Icon(Icons.add_to_photos), onPressed: _routeToPage2),
+        IconButton(icon: Icon(Icons.apps), onPressed: _routeToApps),
       ]),
       body: _buildSuggestions(),
     );
@@ -62,6 +69,7 @@ class _RandomWordsState extends State<RandomWords> {
           color: alreadySaved ? Colors.red : null,
         ),
         onTap: () {
+          logger.d('onTap : ' + alreadySaved.toString());
           setState(() {
             if (alreadySaved) {
               _saved.remove(pair);
@@ -95,5 +103,24 @@ class _RandomWordsState extends State<RandomWords> {
         );
       },
     ));
+  }
+
+  void _routeToApps() {
+    logger.d('route ja');
+    // Navigator.push(context, MaterialPageRoute(builder: (context) => App()));
+    Navigator.of(context).push(_createRoute(App()));
+  }
+
+  void _routeToPage2() {
+    Navigator.of(context).push(_createRoute(Page2()));
+  }
+
+  Route _createRoute(StatelessWidget target) {
+    return PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => target,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return child;
+        });
+    // return MaterialPageRoute(builder: (context) => target);
   }
 }
