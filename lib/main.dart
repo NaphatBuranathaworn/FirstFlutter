@@ -1,12 +1,10 @@
 import 'package:FirstFlutter/app.dart';
+import 'package:FirstFlutter/log_utils.dart';
 import 'package:FirstFlutter/page2.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 
 void main() => runApp(MyApp());
-
-final logger = Logger();
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -69,7 +67,7 @@ class _RandomWordsState extends State<RandomWords> {
           color: alreadySaved ? Colors.red : null,
         ),
         onTap: () {
-          logger.d('onTap : ' + alreadySaved.toString());
+          LogUtils.info('onTap : ' + alreadySaved.toString());
           setState(() {
             if (alreadySaved) {
               _saved.remove(pair);
@@ -106,7 +104,7 @@ class _RandomWordsState extends State<RandomWords> {
   }
 
   void _routeToApps() {
-    logger.d('route ja');
+    LogUtils.info('route ja');
     Navigator.of(context).push(_createRoute(App()));
   }
 

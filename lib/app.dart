@@ -1,8 +1,7 @@
+import 'package:FirstFlutter/app_container_animate.dart';
+import 'package:FirstFlutter/log_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:flutter/physics.dart';
-
-final logger = Logger();
 
 class App extends StatelessWidget {
   @override
@@ -10,16 +9,26 @@ class App extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(title: Text('AnimateWidget')),
         body: DraggableCard(
-          child: FlutterLogo(
-            size: 128,
-          ),
-        ));
+            child: FlutterLogo(
+              size: 128,
+            ),
+            child2: RaisedButton(
+                onPressed: () => {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => AppContainerAnimate()))
+                    },
+                color: Colors.blue,
+                child: Text(
+                  'TEST ja',
+                  style: TextStyle(color: Colors.white),
+                ))));
   }
 }
 
 class DraggableCard extends StatefulWidget {
   final Widget child;
-  DraggableCard({this.child});
+  final Widget child2;
+  DraggableCard({this.child, this.child2});
 
   @override
   State<StatefulWidget> createState() {
@@ -65,7 +74,7 @@ class _DraggableCardState extends State<DraggableCard>
         AnimationController(vsync: this, duration: Duration(seconds: 1));
     _controller.addListener(() {
       setState(() {
-        logger.d('_animation.value : ' + _animation.value.toString());
+        LogUtils.info('_animation.value : ' + _animation.value.toString());
         _dragAlignment = _animation.value;
       });
     });
@@ -81,25 +90,37 @@ class _DraggableCardState extends State<DraggableCard>
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return GestureDetector(
-      onPanDown: (details) {
-        _controller.stop();
-      },
-      onPanUpdate: (details) {
-        setState(() {
-          _dragAlignment += Alignment(
-            details.delta.dx / (size.width / 2),
-            details.delta.dy / (size.height / 2),
-          );
-        });
-      },
-      onPanEnd: (details) {
-        _runAnimation(details.velocity.pixelsPerSecond, size);
-      },
-      child: Align(
-          alignment: _dragAlignment,
-          child: Card(
-            child: widget.child,
-          )),
-    );
+        onPanDown: (details) {
+          _controller.stop();
+        },
+        onPanUpdate: (details) {
+          setState(() {
+            _dragAlignment += Alignment(
+              details.delta.dx / (size.width / 2),
+              details.delta.dy / (size.height / 2),
+            );
+          });
+        },
+        onPanEnd: (details) {
+          _runAnimation(details.velocity.pixelsPerSecond, size);
+        },
+        // child: Align(
+        //     alignment: _dragAlignment,
+        //     child: Card(
+        //       child: widget.child,
+        //     )),
+        child: new Column(children: [
+          new Container(
+            height: MediaQuery.of(context).copyWith().size.height / 2,
+            child: Align(
+                alignment: _dragAlignment,
+                child: Card(
+                  child: widget.child,
+                )),
+          ),
+          new Container(
+            child: widget.child2,
+          )
+        ]));
   }
 }
